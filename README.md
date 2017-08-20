@@ -3,6 +3,7 @@
 ```
 # CODE INSERT
 
+include("mysql.php");
 $mysql = new J_MYSQL;
 $mysql->J_Connect();
 $arr = array(
