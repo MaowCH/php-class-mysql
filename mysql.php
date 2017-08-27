@@ -2,34 +2,65 @@
 
 class J_MYSQL{
 
-    var $db_host;
-    var $db_user;
-    var $db_pass;
-    var $db_name;
-    var $db_connection;
+var $db_host;
+var $db_user;
+var $db_pass;
+var $db_name;
+var $db_connection;
 
+function J_MYSQL(){
+    $this->db_host = "localhost";
+    $this->db_user = "root";
+    $this->db_pass = "1234";
+    $this->db_name = "db_test";
+}
 
-    function J_MYSQL(){
-        $this->db_host = "localhost";
-        $this->db_user = "root";
-        $this->db_pass = "1234";
-        $this->db_name = "db_test";   
+function J_Connect(){
+  $this->db_connection =  mysqli_connect($this->db_host,$this->db_user,$this->db_pass,$this->db_name);
+}
+
+function J_Insert($arr,$tblName){
+
+    $str = "INSERT INTO ".$tblName."(".implode(",",array_keys($arr)).")";
+    $str2 = " VALUES('".implode("','",$arr)."');";
+    $sql = $str.$str2;
+    echo $sql;
+    $rs = mysqli_query($this->db_connection,$sql);
+
+    return $rs;
+
+}
+
+function J_Update($arr,$key,$tblName){
+    $sql = "UPDATE ".$tblName." SET ";
+    $last_key = end(array_keys($arr));
+    $last_arr = end($key);
+    $where = " WHERE ";
+    foreach($arr as $k => $val){
+        $sql .= $k." = '".$val."' ";
+
+        if($k != $last_key)
+            $sql .= ",";
+
+        if(in_array($k,$key)){
+            $where .= $k." = '".$val."' ";
+
+            if($k != $last_arr)
+                $where .= " AND ";
+        }
+            
+
     }
 
-    function J_Connect(){
-        $this->db_connection = mysqli_connect($this->db_host,$this->db_user,$this->db_pass,$this->db_name);
-    }
 
-    function J_Insert($arr,$tblName){
-        $sql = " INSERT INTO table(id,name) VALUES('1','test');   ";
-        $string1 = "INSERT INTO ".$tblName."(".implode(",",array_keys($arr)).")";
-        $string2 = " VALUES('".implode("','",$arr)."');";
-        $sql = $string1.$string2;
+    $rs = mysqli_query($this->db_connection,$sql.$where);
+    return $rs;
 
-        return mysqli_query($this->db_connection,$sql);
-    }
+}
+
 
 
 }
+
 
 ?>
